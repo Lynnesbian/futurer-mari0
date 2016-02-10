@@ -1,21 +1,18 @@
 music = {
-	thread = love.thread.newThread("musicloader_thread.lua"),
-	toload = {},
 	loaded = {},
 	list = {},
 	list_fast = {},
 	pitch = 1,
 }
 
-music.stringlist = table.concat(music.toload, ";")
-
---adaptation for the channel API
-love.thread.getChannel("musiclist")
-love.thread.getChannel("sources")
-
-
-function music:init()
-	self.thread:start()
+local musicpath = "sounds/%s.ogg"
+local function getfilename(name)
+	local filename = name:match("%.[mo][pg][3g]$") and name or musicpath:format(name) -- mp3 or ogg
+	if love.filesystem.exists(filename) and love.filesystem.isFile(filename) then
+		return filename
+	else
+		print(string.format("thread can't load \"%s\": not a file!", filename))
+	end
 end
 
 function music:load(musicfile) -- can take a single file string or an array of file strings
@@ -26,28 +23,18 @@ function music:load(musicfile) -- can take a single file string or an array of f
 	else
 		self:preload(musicfile)
 	end
-	self.stringlist = table.concat(self.toload, ";")
-	love.thread.getChannel("musiclist"):push(self.stringlist)
 end
 
 function music:preload(musicfile)
 	if self.loaded[musicfile] == nil then
-		self.loaded[musicfile] = false
-		table.insert(self.toload, musicfile)
+		local filename = getfilename(musicfile)
+		local source = love.audio.newSource(filename)
+		self:onLoad(musicfile, source)
 	end
 end
 
 function music:play(name)
-	print("play")
 	if name and soundenabled then
-		if self.loaded[name] == false then
-			local source = love.thread.getChannel("sources"):pop()
-			self:onLoad(source.name, source.source)
-			while(name ~= source.name) do
-				source = love.thread.getChannel("sources"):pop()
-				self:onLoad(source.name, source.source)
-			end
-		end
 		if self.loaded[name] then
 			playsound(self.loaded[name])
 		end
@@ -71,19 +58,11 @@ function music:stopIndex(index, isfast)
 end
 
 function music:update()
-	for i,v in ipairs(self.toload) do
-		local source = love.thread.getChannel("sources"):pop()
-		if source then
-			self:onLoad(source.name, source.source)
-		end
-	end
 	for name, source in pairs(self.loaded) do
 		if source ~= false then
 			source:setPitch(self.pitch)
 		end
 	end
-	local err = self.thread:getError()
-	if err then print(err) end
 end
 
 function music:onLoad(name, source)
@@ -92,8 +71,7 @@ function music:onLoad(name, source)
 	source:setPitch(self.pitch)
 end
 
-
-music:load{
+local toload = {
 	"overworld",
 	"overworld-fast",
 	"underground",
@@ -106,14 +84,13 @@ music:load{
 	"starmusic-fast",
 	"princessmusic",
 }
+music:load(toload)
 
 -- the original/default music needs to be put in the correct lists
-for i,v in ipairs(music.toload) do
+for i,v in ipairs(toload) do
 	if v:match("fast") then
 		table.insert(music.list_fast, v)
 	elseif not v:match("princessmusic") then
 		table.insert(music.list, v)
 	end
 end
-
-music:init()
