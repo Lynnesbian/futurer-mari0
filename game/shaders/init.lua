@@ -120,7 +120,7 @@ function shaders:init(numpasses)
 		return
 	end
 
-	local files = love.filesystem.getDirectoryItems("shaders")
+	local files = {'4xBR.frag','CRT-Simple.frag','CRT.frag','curvature.frag','edges.frag','HDR-TV.frag','hq2x.frag','hq4x.frag','phosphorish.frag','pixellate2.frag','scale4xhq.frag','scanlines2.frag','waterpaint.frag'}
 
 	for i,v in ipairs(files) do
 		local filename, filetype = v:match("(.+)%.(.-)$")

@@ -10,7 +10,7 @@
 function love.load()
 	marioversion = 1006
 	versionstring = "version 1.6"
-	shaderlist = love.filesystem.getDirectoryItems( "shaders/" )
+	shaderlist = {'4xBR.frag','CRT-Simple.frag','CRT.frag','curvature.frag','edges.frag','HDR-TV.frag','hq2x.frag','hq4x.frag','phosphorish.frag','pixellate2.frag','scale4xhq.frag','scanlines2.frag','waterpaint.frag'}
 	dlclist = {"dlc_a_portal_tribute", "dlc_acid_trip", "dlc_escape_the_lab", "dlc_scienceandstuff", "dlc_smb2J", "dlc_the_untitled_game"}
 
 	local rem
