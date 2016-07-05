@@ -1342,82 +1342,82 @@ function loadmappacks()
 end
 
 function loadonlinemappacks()
-	mappacktype = "online"
-	downloadmappacks()
-	onlinemappacklist = love.filesystem.getDirectoryItems( "mappacks" )
+	-- mappacktype = "online"
+	-- downloadmappacks()
+	-- onlinemappacklist = love.filesystem.getDirectoryItems( "mappacks" )
 
-	local delete = {}
-	for i = 1, #onlinemappacklist do
-		if not love.filesystem.exists( "mappacks/" .. onlinemappacklist[i] .. "/version.txt") or not love.filesystem.exists( "mappacks/" .. onlinemappacklist[i] .. "/settings.txt") then
-			table.insert(delete, i)
-		end
-	end
+	-- local delete = {}
+	-- for i = 1, #onlinemappacklist do
+	-- 	if not love.filesystem.exists( "mappacks/" .. onlinemappacklist[i] .. "/version.txt") or not love.filesystem.exists( "mappacks/" .. onlinemappacklist[i] .. "/settings.txt") then
+	-- 		table.insert(delete, i)
+	-- 	end
+	-- end
 
-	table.sort(delete, function(a,b) return a>b end)
+	-- table.sort(delete, function(a,b) return a>b end)
 
-	for i, v in pairs(delete) do
-		table.remove(onlinemappacklist, v) --remove
-	end
+	-- for i, v in pairs(delete) do
+	-- 	table.remove(onlinemappacklist, v) --remove
+	-- end
 
-	onlinemappackicon = {}
+	-- onlinemappackicon = {}
 
-	--get info
-	onlinemappackname = {}
-	onlinemappackauthor = {}
-	onlinemappackdescription = {}
-	onlinemappackbackground = {}
+	-- --get info
+	-- onlinemappackname = {}
+	-- onlinemappackauthor = {}
+	-- onlinemappackdescription = {}
+	-- onlinemappackbackground = {}
 
-	for i = 1, #onlinemappacklist do
-		if love.filesystem.exists( "mappacks/" .. onlinemappacklist[i] .. "/icon.png" ) then
-			onlinemappackicon[i] = love.graphics.newImage("mappacks/" .. onlinemappacklist[i] .. "/icon.png")
-		else
-			onlinemappackicon[i] = nil
-		end
+	-- for i = 1, #onlinemappacklist do
+	-- 	if love.filesystem.exists( "mappacks/" .. onlinemappacklist[i] .. "/icon.png" ) then
+	-- 		onlinemappackicon[i] = love.graphics.newImage("mappacks/" .. onlinemappacklist[i] .. "/icon.png")
+	-- 	else
+	-- 		onlinemappackicon[i] = nil
+	-- 	end
 
-		onlinemappackauthor[i] = nil
-		onlinemappackdescription[i] = nil
-		onlinemappackbackground[i] = nil
-		if love.filesystem.exists( "mappacks/" .. onlinemappacklist[i] .. "/settings.txt" ) then
-			local s = love.filesystem.read( "mappacks/" .. onlinemappacklist[i] .. "/settings.txt" )
-			local s1 = s:split("\n")
-			for j = 1, #s1 do
-				local s2 = s1[j]:split("=")
-				if s2[1] == "name" then
-					onlinemappackname[i] = s2[2]
-				elseif s2[1] == "author" then
-					onlinemappackauthor[i] = s2[2]
-				elseif s2[1] == "description" then
-					onlinemappackdescription[i] = s2[2]
-				elseif s2[1] == "background" then
-					onlinemappackbackground[i] = s2[2]
-				end
-			end
-		else
-			onlinemappackname[i] = onlinemappacklist[i]
-		end
-	end
+	-- 	onlinemappackauthor[i] = nil
+	-- 	onlinemappackdescription[i] = nil
+	-- 	onlinemappackbackground[i] = nil
+	-- 	if love.filesystem.exists( "mappacks/" .. onlinemappacklist[i] .. "/settings.txt" ) then
+	-- 		local s = love.filesystem.read( "mappacks/" .. onlinemappacklist[i] .. "/settings.txt" )
+	-- 		local s1 = s:split("\n")
+	-- 		for j = 1, #s1 do
+	-- 			local s2 = s1[j]:split("=")
+	-- 			if s2[1] == "name" then
+	-- 				onlinemappackname[i] = s2[2]
+	-- 			elseif s2[1] == "author" then
+	-- 				onlinemappackauthor[i] = s2[2]
+	-- 			elseif s2[1] == "description" then
+	-- 				onlinemappackdescription[i] = s2[2]
+	-- 			elseif s2[1] == "background" then
+	-- 				onlinemappackbackground[i] = s2[2]
+	-- 			end
+	-- 		end
+	-- 	else
+	-- 		onlinemappackname[i] = onlinemappacklist[i]
+	-- 	end
+	-- end
 
-	--get the current cursorposition
-	for i = 1, #onlinemappacklist do
-		if onlinemappacklist[i] == mappack then
-			onlinemappackselection = i
-		end
-	end
+	-- --get the current cursorposition
+	-- for i = 1, #onlinemappacklist do
+	-- 	if onlinemappacklist[i] == mappack then
+	-- 		onlinemappackselection = i
+	-- 	end
+	-- end
 
-	if #onlinemappacklist >= 1 then
-		mappack = onlinemappacklist[onlinemappackselection]
-	end
+	-- if #onlinemappacklist >= 1 then
+	-- 	mappack = onlinemappacklist[onlinemappackselection]
+	-- end
 
-	--load background
-	if onlinemappackbackground[onlinemappackselection] then
-		loadbackground(onlinemappackbackground[onlinemappackselection] .. ".txt")
-	else
-		loadbackground("1-1.txt")
-	end
+	-- --load background
+	-- if onlinemappackbackground[onlinemappackselection] then
+	-- 	loadbackground(onlinemappackbackground[onlinemappackselection] .. ".txt")
+	-- else
+	-- 	loadbackground("1-1.txt")
+	-- end
 
-	onlinemappackscroll = 0
-	onlineupdatescroll()
-	onlinemappackscrollsmooth = onlinemappackscroll
+	-- onlinemappackscroll = 0
+	-- onlineupdatescroll()
+	-- onlinemappackscrollsmooth = onlinemappackscroll
 end
 
 function downloadmappacks()

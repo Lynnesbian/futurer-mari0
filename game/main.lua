@@ -147,9 +147,9 @@ function love.load()
 	love.filesystem.setIdentity("mari0")
 
 	updatenotification = false
-	if getupdate() then
-		updatenotification = true
-	end
+	-- if getupdate() then
+	-- 	updatenotification = true
+	-- end
 	http.TIMEOUT = 4
 
 	graphicspack = "SMB" --SMB, ALLSTARS
