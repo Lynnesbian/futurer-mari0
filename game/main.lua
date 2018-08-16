@@ -42,7 +42,7 @@ function love.load()
 	love.window.setTitle( "Mari0" )
 
 	--version check by checking for a const that was added in 0.8.0
-	if love._version_major == nil then error("You have an outdated version of Love! Get 0.8.0 or higher and retry.") end
+	if love._version_major < 11 then error("You have an outdated version of Love! Get 11.0 or higher and retry.") end
 
 	iconimg = love.image.newImageData("graphics/icon.bmp")
 	love.window.setIcon(iconimg)
@@ -925,7 +925,7 @@ function loadconfig()
 	players = 1
 	defaultconfig()
 
-	if not love.filesystem.exists("options.txt") then
+	if love.filesystem.getInfo("options.txt") == nil then
 		return
 	end
 
@@ -1005,7 +1005,7 @@ function loadconfig()
 		elseif s2[1] == "mouseowner" then
 			mouseowner = tonumber(s2[2])
 		elseif s2[1] == "mappack" then
-			if love.filesystem.exists("mappacks/" .. s2[2] .. "/") then
+			if love.filesystem.getInfo("mappacks/" .. s2[2] .. "/") ~= nil then
 				mappack = s2[2]
 			end
 		elseif s2[1] == "gamefinished" then
@@ -1156,7 +1156,7 @@ function suspendgame()
 end
 
 function continuegame()
-	if not love.filesystem.exists("suspend.txt") then
+	if love.filesystem.getInfo("suspend.txt") == nil then
 		return
 	end
 
@@ -1552,7 +1552,7 @@ function loadcustombackground()
 		levelstring = levelstring .. "_" .. mariosublevel
 	end
 
-	while love.filesystem.exists("mappacks/" .. mappack .. "/" .. levelstring .. "background" .. i .. ".png") do
+	while love.filesystem.getInfo("mappacks/" .. mappack .. "/" .. levelstring .. "background" .. i .. ".png") ~= nil do
 		custombackgroundimg[i] = love.graphics.newImage("mappacks/" .. mappack .. "/" .. levelstring .. "background" .. i .. ".png")
 		custombackgroundwidth[i] = custombackgroundimg[i]:getWidth()/16
 		custombackgroundheight[i] = custombackgroundimg[i]:getHeight()/16
@@ -1560,7 +1560,7 @@ function loadcustombackground()
 	end
 
 	if #custombackgroundimg == 0 then
-		while love.filesystem.exists("mappacks/" .. mappack .. "/background" .. i .. ".png") do
+		while love.filesystem.getInfo("mappacks/" .. mappack .. "/background" .. i .. ".png") ~= nils do
 			custombackgroundimg[i] = love.graphics.newImage("mappacks/" .. mappack .. "/background" .. i .. ".png")
 			custombackgroundwidth[i] = custombackgroundimg[i]:getWidth()/16
 			custombackgroundheight[i] = custombackgroundimg[i]:getHeight()/16

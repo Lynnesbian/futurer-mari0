@@ -4,5 +4,5 @@ function love.conf(t)
 	t.console = true
 	--t.screen = false
 	t.modules.physics = false
-	t.version = "0.10.0" --yay
+	t.version = "11.0" --yippee
 end

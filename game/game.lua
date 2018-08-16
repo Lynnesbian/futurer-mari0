@@ -19,7 +19,7 @@ function game_load(suspended)
 
 	--get mariolives
 	mariolivecount = 3
-	if love.filesystem.exists("mappacks/" .. mappack .. "/settings.txt") then
+	if love.filesystem.getInfo("mappacks/" .. mappack .. "/settings.txt") ~= nil then
 		local s = love.filesystem.read( "mappacks/" .. mappack .. "/settings.txt" )
 		local s1 = s:split("\n")
 		for j = 1, #s1 do
@@ -79,7 +79,7 @@ function game_load(suspended)
 
 	--add custom tiles
 	local bla = love.timer.getTime()
-	if love.filesystem.exists("mappacks/" .. mappack .. "/tiles.png") then
+	if love.filesystem.getInfo("mappacks/" .. mappack .. "/tiles.png") then
 		customtiles = true
 		customtilesimg = love.graphics.newImage("mappacks/" .. mappack .. "/tiles.png")
 		local imgwidth, imgheight = customtilesimg:getWidth(), customtilesimg:getHeight()
@@ -115,10 +115,10 @@ function game_load(suspended)
 	end
 
 	custommusic = false
-	if love.filesystem.exists("mappacks/" .. mappack .. "/music.ogg") then
+	if love.filesystem.getInfo("mappacks/" .. mappack .. "/music.ogg") ~= nil then
 		custommusic = "mappacks/" .. mappack .. "/music.ogg"
 		music:load(custommusic)
-	elseif love.filesystem.exists("mappacks/" .. mappack .. "/music.mp3") then
+	elseif love.filesystem.getInfo("mappacks/" .. mappack .. "/music.mp3") ~= nil then
 		custommusic = "mappacks/" .. mappack .. "/music.mp3"
 		music:load(custommusic)
 	end
@@ -858,15 +858,15 @@ function game_draw()
 		if earthquake > 0 then
 			local colortable = {{242, 111, 51}, {251, 244, 174}, {95, 186, 76}, {29, 151, 212}, {101, 45, 135}, {238, 64, 68}}
 			for i = 1, backgroundstripes do
-				local r, g, b = unpack(colortable[math.mod(i-1, 6)+1])
+				local r, g, b = unpack(colortable[i-1 % 6+1])
 				local a = earthquake/rainboomearthquake*255
 
 				love.graphics.setColor(r, g, b, a)
 
-				local alpha = math.rad((i/backgroundstripes + math.mod(sunrot/5, 1)) * 360)
+				local alpha = math.rad((i/backgroundstripes + sunrot/5 % 1) * 360)
 				local point1 = {width*8*scale+300*scale*math.cos(alpha), 112*scale+300*scale*math.sin(alpha)}
 
-				local alpha = math.rad(((i+1)/backgroundstripes + math.mod(sunrot/5, 1)) * 360)
+				local alpha = math.rad(((i+1)/backgroundstripes + sunrot/5 % 1) * 360)
 				local point2 = {width*8*scale+300*scale*math.cos(alpha), 112*scale+300*scale*math.sin(alpha)}
 
 				love.graphics.polygon("fill", width*8*scale, 112*scale, point1[1], point1[2], point2[1], point2[2])
@@ -908,7 +908,7 @@ function game_draw()
 				end
 				for y = 1, math.ceil(15/custombackgroundheight[i]) do
 					for x = 1, math.ceil(width/custombackgroundwidth[i])+1 do
-						love.graphics.draw(custombackgroundimg[i], math.floor(((x-1)*custombackgroundwidth[i])*16*scale) - math.floor(math.mod(xscroll, custombackgroundwidth[i])*16*scale), (y-1)*custombackgroundheight[i]*16*scale, 0, scale, scale)
+						love.graphics.draw(custombackgroundimg[i], math.floor(((x-1)*custombackgroundwidth[i])*16*scale) - math.floor(xscroll % custombackgroundwidth[i]*16*scale), (y-1)*custombackgroundheight[i]*16*scale, 0, scale, scale)
 					end
 				end
 			end
@@ -940,10 +940,10 @@ function game_draw()
 		end
 
 		--TILES
-		love.graphics.draw(smbspritebatch[split], math.floor(-math.mod(xscroll, 1)*16*scale), 0)
-		love.graphics.draw(portalspritebatch[split], math.floor(-math.mod(xscroll, 1)*16*scale), 0)
+		love.graphics.draw(smbspritebatch[split], math.floor(-xscroll % 1*16*scale), 0)
+		love.graphics.draw(portalspritebatch[split], math.floor(-xscroll % 1*16*scale), 0)
 		if customtiles then
-			love.graphics.draw(customspritebatch[split], math.floor(-math.mod(xscroll, 1)*16*scale), 0)
+			love.graphics.draw(customspritebatch[split], math.floor(-xscroll % 1*16*scale), 0)
 		end
 
 		local lmap = map
@@ -965,12 +965,12 @@ function game_draw()
 
 				local tilenumber = t[1]
 				if tilequads[tilenumber].coinblock and tilequads[tilenumber].invisible == false then --coinblock
-					love.graphics.draw(coinblockimage, coinblockquads[spriteset][coinframe], math.floor((x-1-math.mod(xscroll, 1))*16*scale), ((y-1-bounceyoffset)*16-8)*scale, 0, scale, scale)
+					love.graphics.draw(coinblockimage, coinblockquads[spriteset][coinframe], math.floor((x-1-xscroll % 1)*16*scale), ((y-1-bounceyoffset)*16-8)*scale, 0, scale, scale)
 				elseif tilequads[tilenumber].coin then --coin
-					love.graphics.draw(coinimage, coinquads[spriteset][coinframe], math.floor((x-1-math.mod(xscroll, 1))*16*scale), ((y-1-bounceyoffset)*16-8)*scale, 0, scale, scale)
+					love.graphics.draw(coinimage, coinquads[spriteset][coinframe], math.floor((x-1-xscroll % 1)*16*scale), ((y-1-bounceyoffset)*16-8)*scale, 0, scale, scale)
 				elseif bounceyoffset ~= 0 then
 					if tilequads[tilenumber].invisible == false or editormode then
-						love.graphics.draw(tilequads[tilenumber].image, tilequads[tilenumber].quad, math.floor((x-1-math.mod(xscroll, 1))*16*scale), ((y-1-bounceyoffset)*16-8)*scale, 0, scale, scale)
+						love.graphics.draw(tilequads[tilenumber].image, tilequads[tilenumber].quad, math.floor((x-1-xscroll % 1)*16*scale), ((y-1-bounceyoffset)*16-8)*scale, 0, scale, scale)
 					end
 				end
 
@@ -991,24 +991,24 @@ function game_draw()
 						end
 
 						if t["gels"][dir] == 1 then
-							love.graphics.draw(gel1ground, math.floor((x-.5-math.mod(xscroll, 1))*16*scale), ((y-1-bounceyoffset)*16)*scale, r, scale, scale, 8, 8)
+							love.graphics.draw(gel1ground, math.floor((x-.5-xscroll % 1)*16*scale), ((y-1-bounceyoffset)*16)*scale, r, scale, scale, 8, 8)
 						elseif t["gels"][dir] == 2 then
-							love.graphics.draw(gel2ground, math.floor((x-.5-math.mod(xscroll, 1))*16*scale), ((y-1-bounceyoffset)*16)*scale, r, scale, scale, 8, 8)
+							love.graphics.draw(gel2ground, math.floor((x-.5-xscroll % 1)*16*scale), ((y-1-bounceyoffset)*16)*scale, r, scale, scale, 8, 8)
 						elseif t["gels"][dir] == 3 then
-							love.graphics.draw(gel3ground, math.floor((x-.5-math.mod(xscroll, 1))*16*scale), ((y-1-bounceyoffset)*16)*scale, r, scale, scale, 8, 8)
+							love.graphics.draw(gel3ground, math.floor((x-.5-xscroll % 1)*16*scale), ((y-1-bounceyoffset)*16)*scale, r, scale, scale, 8, 8)
 						end
 					end
 				end
 
 				if editormode then
 					if tilequads[t[1]].invisible and t[1] ~= 1 then
-						love.graphics.draw(tilequads[t[1]].image, tilequads[t[1]].quad, math.floor((x-1-math.mod(xscroll, 1))*16*scale), ((y-1)*16-8)*scale, 0, scale, scale)
+						love.graphics.draw(tilequads[t[1]].image, tilequads[t[1]].quad, math.floor((x-1-xscroll % 1)*16*scale), ((y-1)*16-8)*scale, 0, scale, scale)
 					end
 
 					if #t > 1 and t[2] ~= "link" then
 						tilenumber = t[2]
 						love.graphics.setColor(255, 255, 255, 150)
-						love.graphics.draw(entityquads[tilenumber].image, entityquads[tilenumber].quad, math.floor((x-1-math.mod(xscroll, 1))*16*scale), ((y-1)*16-8)*scale, 0, scale, scale)
+						love.graphics.draw(entityquads[tilenumber].image, entityquads[tilenumber].quad, math.floor((x-1-xscroll % 1)*16*scale), ((y-1)*16-8)*scale, 0, scale, scale)
 						love.graphics.setColor(255, 255, 255, 255)
 					end
 				end
@@ -2236,7 +2236,7 @@ end
 
 function loadmap(filename)
 	print("Loading " .. "mappacks/" .. mappack .. "/" .. filename .. ".txt")
-	if love.filesystem.exists("mappacks/" .. mappack .. "/" .. filename .. ".txt") == false then
+	if love.filesystem.getInfo("mappacks/" .. mappack .. "/" .. filename .. ".txt") ~= nil == false then
 		print("mappacks/" .. mappack .. "/" .. filename .. ".txt not found!")
 		return false
 	end
@@ -2246,7 +2246,7 @@ function loadmap(filename)
 	--MAP ITSELF
 	local t = s2[1]:split(",")
 
-	if math.mod(#t, 15) ~= 0 then
+	if #t % 15 ~= 0 then
 		print("Incorrect number of entries: " .. #t)
 		return false
 	end
@@ -3655,13 +3655,13 @@ function traceline(sourcex, sourcey, radians)
 
 		--get tendency
 		if side == "down" or side == "up" then
-			if math.mod(x, 1) > 0.5 then
+			if x % 1 > 0.5 then
 				tendency = 1
 			else
 				tendency = -1
 			end
 		elseif side == "left" or side == "right" then
-			if math.mod(y, 1) > 0.5 then
+			if y % 1 > 0.5 then
 				tendency = 1
 			else
 				tendency = -1
@@ -3836,7 +3836,7 @@ end
 function playsound(sound)
 	if soundenabled then
 		sound:stop()
-		sound:rewind()
+		sound:seek(0)
 		sound:play()
 	end
 end

@@ -34,7 +34,7 @@ function levelscreen_load(reason, i)
 			checkpointx = nil
 
 			--check if next level doesn't exist
-			if not love.filesystem.exists("mappacks/" .. mappack .. "/" .. marioworld .. "-" .. mariolevel .. ".txt") then
+			if not love.filesystem.getInfo("mappacks/" .. mappack .. "/" .. marioworld .. "-" .. mariolevel .. ".txt") ~= nil then
 				gamestate = "mappackfinished"
 				blacktime = gameovertime
 				music:play("princessmusic")
